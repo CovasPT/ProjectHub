@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Immutable;
 
-namespace ProjectHub.Domain.Models
+namespace ProjectHub.Domain.Models;
+
+// Usamos PascalCase para as propriedades
+public record Project(
+    Guid Id,
+    string Name,
+    ImmutableList<Objective> Objectives)
 {
-    public record Project(
-        Guid Id,
-        String Name,
-        IReadOnlyList<Objective> Objectives);
-
-    public record Objective(
-        string description,
-        bool isCompleted);
-
+    // Construtor compacto para garantir que Objectives nunca é null
+    public Project(Guid id, string name, IEnumerable<Objective>? objectives = null)
+        : this(id, name, objectives?.ToImmutableList() ?? ImmutableList<Objective>.Empty)
+    {
+    }
 }
+
+public record Objective(
+    string Description,
+    bool IsCompleted,
+    bool IsBlurred);
